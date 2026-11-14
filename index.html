@@ -23,7 +23,8 @@
     --soft: #efe7d6;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; min-height: 100%; }
+  html, body { margin: 0; min-height: 100%; overflow-x: clip; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     background: radial-gradient(ellipse at top, var(--bg) 0%, var(--bg2) 75%) fixed;
     color: var(--ink);
@@ -57,7 +58,7 @@
   button:hover, .btn:hover { background: var(--red-dark); }
   button:active, .btn:active { transform: scale(.98); }
   button:disabled { opacity: .6; cursor: wait; }
-  button.secondary, .btn.secondary { background: transparent; color: var(--green); border: 1.5px solid var(--green); padding: 8px 12px; font-size: .875rem; }
+  button.secondary, .btn.secondary { background: transparent; color: var(--green); border: 1.5px solid var(--green); padding: 10px 14px; min-height: 44px; font-size: .9rem; }
   button.secondary:hover, .btn.secondary:hover { background: #e8f1ec; }
   .primary-btn { width: 100%; margin-top: 18px; font-size: 1.05rem; }
   .error { color: var(--red); font-weight: 600; margin-top: 12px; }
@@ -97,7 +98,8 @@
   .gift .bow::before { left: 0; transform: rotate(-20deg); }
   .gift .bow::after { right: 0; transform: rotate(20deg); }
   .gift .lid-group { position: absolute; inset: 0; transition: transform .8s cubic-bezier(.3,1.4,.5,1), opacity .8s; }
-  .gift.open .lid-group { transform: translate(60px, -140px) rotate(35deg); opacity: 0; }
+  .gift.open .lid-group { transform: translate(60px, -140px) rotate(35deg); opacity: 0; visibility: hidden; transition: transform .8s cubic-bezier(.3,1.4,.5,1), opacity .8s, visibility 0s .8s; }
+  .reveal { overflow-x: clip; }
   .gift:not(.open) { animation: wiggle 2.4s ease-in-out infinite; }
   @keyframes wiggle { 0%, 80%, 100% { transform: rotate(0); } 84% { transform: rotate(-4deg); } 88% { transform: rotate(4deg); } 92% { transform: rotate(-3deg); } 96% { transform: rotate(2deg); } }
   .tap { color: var(--gold); font-weight: 600; }
