@@ -42,8 +42,20 @@
     font: 16px/1.5 Inter, system-ui, sans-serif;
     overflow-x: hidden;
   }
+  .music-btn {
+    position: fixed; z-index: 5;
+    top: calc(12px + env(safe-area-inset-top)); right: calc(12px + env(safe-area-inset-right));
+    width: 44px; height: 44px; padding: 0; border-radius: 50%;
+    background: rgba(251,246,236,.14); border: 1.5px solid rgba(251,246,236,.45);
+    font-size: 1.2rem; line-height: 1; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .music-btn:hover { background: rgba(251,246,236,.24); }
+  .music-btn.playing { border-color: var(--gold); }
+  .credit { text-align: center; color: rgba(207,224,214,.6); font-size: .72rem; margin: 36px 0 0; }
+  .credit a { color: inherit; }
   #snow { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-  main { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 36px 16px 64px; }
+  main { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 36px 16px 40px; }
+  @media (max-width: 720px) { main { padding-top: calc(64px + env(safe-area-inset-top)); } }
   h1, h2 { font-family: Fraunces, Georgia, serif; margin: 0; }
   .eyebrow { color: var(--gold); text-align: center; text-transform: uppercase; letter-spacing: .18em; font-size: .8rem; font-weight: 600; }
   .title { color: #fff; text-align: center; font-size: clamp(2rem, 7vw, 3rem); font-weight: 800; letter-spacing: -0.01em; line-height: 1.1; margin-top: 6px; }
@@ -135,6 +147,8 @@
 </head>
 <body>
 <canvas id="snow" aria-hidden="true"></canvas>
+<button id="music-btn" class="music-btn" type="button" aria-label="Play music" aria-pressed="false"><span aria-hidden="true">🔇</span></button>
+<audio id="music" src="music.m4a" preload="none" loop></audio>
 <main>
 
   <!-- INVITE (front page) -->
@@ -221,6 +235,7 @@
     <button class="secondary back" id="back">Lock and go back</button>
   </section>
 
+  <p class="credit">Music: <a href="https://incompetech.com" target="_blank" rel="noopener">“Jingle Bells (Calm)” by Kevin MacLeod</a>, licensed under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a></p>
 </main>
 
 <script src="pairs.js" onerror="window.SANTA_DATA = null"></script>
@@ -278,6 +293,59 @@
   }
   requestAnimationFrame(frame);
 
+  // ---- background music ----
+  // The file only downloads on the first play (preload="none"), so it never slows page load.
+  const music = $("music"), musicBtn = $("music-btn");
+  const VOL = 0.4;
+  let userMuted = false, primed = false;
+  try { userMuted = localStorage.getItem("santa-music") === "off"; } catch {}
+  const remember = (v) => { try { localStorage.setItem("santa-music", v); } catch {} };
+
+  function syncMusicBtn() {
+    const on = !music.paused && !music.muted;
+    musicBtn.classList.toggle("playing", on);
+    musicBtn.setAttribute("aria-pressed", String(on));
+    musicBtn.setAttribute("aria-label", on ? "Mute music" : "Play music");
+    musicBtn.firstElementChild.textContent = on ? "🔊" : "🔇";
+  }
+  function fadeIn() {
+    music.volume = 0;
+    const t = setInterval(() => {
+      music.volume = Math.min(VOL, music.volume + 0.04);
+      if (music.volume >= VOL) clearInterval(t);
+    }, 120);
+  }
+  function startMusic() {
+    music.muted = false;
+    fadeIn();
+    music.play().catch(() => {}).finally(syncMusicBtn);
+  }
+  function primeMusic() {
+    if (userMuted || !music.paused) return;
+    primed = true;
+    music.muted = true;
+    music.play().catch(() => { primed = false; });
+  }
+  function unmutePrimedMusic() {
+    if (!primed) return;
+    primed = false;
+    music.muted = false;
+    fadeIn();
+    syncMusicBtn();
+  }
+  function cancelPrimedMusic() {
+    if (!primed) return;
+    primed = false;
+    music.pause(); music.currentTime = 0; music.muted = false;
+    syncMusicBtn();
+  }
+  musicBtn.addEventListener("click", () => {
+    if (music.paused || music.muted) { userMuted = false; remember("on"); startMusic(); }
+    else { userMuted = true; remember("off"); music.pause(); syncMusicBtn(); }
+  });
+  music.addEventListener("play", syncMusicBtn);
+  music.addEventListener("pause", syncMusicBtn);
+
   // ---- invite + code reveal ----
   function inviteMode() {
     $("invite").classList.remove("hidden");
@@ -290,6 +358,9 @@
       if (normCode(code).length < 4) return (err.textContent = "Please enter the code you were sent.");
       const data = window.SANTA_DATA;
       if (!data) return (err.textContent = "Invitations aren't ready yet. Check back soon!");
+      // Phones only allow sound that starts during a tap, but the code check is async.
+      // So start the music muted right now, and unmute it once the code is confirmed.
+      primeMusic();
       btn.disabled = true; btn.textContent = "Checking…";
       try {
         const key = await keyFor(code, unb64(data.salt), data.iter);
@@ -300,9 +371,11 @@
             match = JSON.parse(new TextDecoder().decode(pt)); break;
           } catch { /* not this one */ }
         }
-        if (!match) { err.textContent = "That code didn't match. Check for typos and try again."; return; }
+        if (!match) { cancelPrimedMusic(); err.textContent = "That code didn't match. Check for typos and try again."; return; }
         showReveal(match);
+        unmutePrimedMusic();
       } catch {
+        cancelPrimedMusic();
         err.textContent = "Something went wrong. Please try again.";
       } finally {
         btn.disabled = false; btn.textContent = "Unlock 🔑";
