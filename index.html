@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Christmas at Pallavi & Aditya's</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Pallavi & Aditya invite you to Christmas dinner and a Secret Santa gift swap.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #12261e;
+    --bg2: #0b1a14;
+    --card: #fbf6ec;
+    --ink: #22201c;
+    --muted: #6d665b;
+    --red: #c0392b;
+    --red-dark: #962d22;
+    --gold: #e6b84d;
+    --line: #e4dccb;
+    --green: #1f6f4a;
+    --soft: #efe7d6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: radial-gradient(ellipse at top, var(--bg) 0%, var(--bg2) 75%) fixed;
+    color: var(--ink);
+    font: 16px/1.5 Inter, system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  #snow { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  main { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 36px 16px 64px; }
+  h1, h2 { font-family: Fraunces, Georgia, serif; margin: 0; }
+  .eyebrow { color: var(--gold); text-align: center; text-transform: uppercase; letter-spacing: .18em; font-size: .8rem; font-weight: 600; }
+  .title { color: #fff; text-align: center; font-size: clamp(2rem, 7vw, 3rem); font-weight: 800; letter-spacing: -0.01em; line-height: 1.1; margin-top: 6px; }
+  .title-sub { display: block; font-size: clamp(1.15rem, 4.2vw, 1.6rem); font-weight: 600; font-style: italic; color: #f3e3bd; margin-top: 8px; letter-spacing: 0; }
+  .subtitle { color: #cfe0d6; text-align: center; margin: 10px 0 24px; }
+  .card { background: var(--card); border-radius: 18px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+  .card + .card, .photo + .card { margin-top: 18px; }
+  .card h2 { font-size: 1.4rem; }
+  label { display: block; font-weight: 600; margin: 18px 0 6px; }
+  label:first-child { margin-top: 0; }
+  .hint { color: var(--muted); font-size: .875rem; font-weight: 400; }
+  textarea, input, select {
+    width: 100%; font: inherit; color: var(--ink); background: #fff;
+    border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  }
+  textarea:focus, input:focus, select:focus { outline: none; border-color: var(--green); }
+  textarea { resize: vertical; min-height: 120px; }
+  button, .btn {
+    display: inline-block; text-decoration: none; text-align: center;
+    font: inherit; font-weight: 600; cursor: pointer; border: 0; border-radius: 10px;
+    padding: 12px 18px; background: var(--red); color: #fff; transition: background .15s, transform .1s;
+  }
+  button:hover, .btn:hover { background: var(--red-dark); }
+  button:active, .btn:active { transform: scale(.98); }
+  button:disabled { opacity: .6; cursor: wait; }
+  button.secondary, .btn.secondary { background: transparent; color: var(--green); border: 1.5px solid var(--green); padding: 8px 12px; font-size: .875rem; }
+  button.secondary:hover, .btn.secondary:hover { background: #e8f1ec; }
+  .primary-btn { width: 100%; margin-top: 18px; font-size: 1.05rem; }
+  .error { color: var(--red); font-weight: 600; margin-top: 12px; }
+  .error:empty { display: none; }
+  .hidden { display: none !important; }
+
+  /* Invite */
+  .photo { margin: 0; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.4); border: 6px solid var(--card); background: var(--card); }
+  .photo img { display: block; width: 100%; height: auto; }
+  .photo figcaption { text-align: center; font-size: .85rem; color: var(--muted); padding: 8px 10px 4px; }
+  .details { list-style: none; padding: 0; margin: 14px 0 0; }
+  .details li { display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .details li:first-child { border-top: 0; padding-top: 4px; }
+  .details .icon { width: 40px; height: 40px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; font-size: 1.2rem; }
+  .details .k { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+  .details .v { font-weight: 600; }
+  .details .sub { color: var(--muted); }
+  .details .btn { margin-top: 8px; }
+  .swatches { display: inline-flex; gap: 6px; margin-left: 6px; vertical-align: -3px; }
+  .swatches i { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,.15); display: inline-block; }
+  .code-row { display: flex; gap: 10px; }
+  .code-row input { text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+  .code-row button { flex-shrink: 0; }
+  @media (max-width: 420px) { .code-row { flex-direction: column; } }
+
+  /* Reveal */
+  .reveal { text-align: center; color: #fff; padding-top: 3vh; }
+  .reveal .hello { font-family: Fraunces, Georgia, serif; font-size: clamp(1.8rem, 6vw, 2.6rem); font-weight: 800; }
+  .reveal .lead { color: #cfe0d6; margin: 6px 0 12px; }
+  .gift { position: relative; width: 200px; height: 200px; margin: 24px auto 10px; cursor: pointer; border: 0; background: none; padding: 0; display: block; }
+  .gift:hover { background: none; }
+  .gift .box { position: absolute; left: 20px; right: 20px; bottom: 0; height: 130px; background: var(--red); border-radius: 6px; }
+  .gift .lid { position: absolute; left: 10px; right: 10px; top: 46px; height: 36px; background: var(--red-dark); border-radius: 6px; }
+  .gift .ribbon-v { position: absolute; left: 50%; width: 26px; margin-left: -13px; top: 46px; bottom: 0; background: var(--gold); }
+  .gift .bow { position: absolute; left: 50%; top: 14px; width: 70px; height: 40px; margin-left: -35px; }
+  .gift .bow::before, .gift .bow::after { content: ""; position: absolute; top: 4px; width: 32px; height: 30px; border: 7px solid var(--gold); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; }
+  .gift .bow::before { left: 0; transform: rotate(-20deg); }
+  .gift .bow::after { right: 0; transform: rotate(20deg); }
+  .gift .lid-group { position: absolute; inset: 0; transition: transform .8s cubic-bezier(.3,1.4,.5,1), opacity .8s; }
+  .gift.open .lid-group { transform: translate(60px, -140px) rotate(35deg); opacity: 0; }
+  .gift:not(.open) { animation: wiggle 2.4s ease-in-out infinite; }
+  @keyframes wiggle { 0%, 80%, 100% { transform: rotate(0); } 84% { transform: rotate(-4deg); } 88% { transform: rotate(4deg); } 92% { transform: rotate(-3deg); } 96% { transform: rotate(2deg); } }
+  .tap { color: var(--gold); font-weight: 600; }
+  .result { opacity: 0; transform: translateY(16px); transition: opacity .6s .35s, transform .6s .35s; }
+  .result.show { opacity: 1; transform: none; }
+  .result .card { text-align: center; color: var(--ink); }
+  .reveal .details-card { text-align: left; color: var(--ink); margin: 8px 0 34px; }
+  .match-title { font-size: clamp(1.4rem, 5vw, 1.8rem); color: #fff; }
+  .result .for { color: var(--muted); text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; font-weight: 600; }
+  .result .name { font-family: Fraunces, Georgia, serif; font-size: clamp(2.2rem, 9vw, 3.4rem); color: var(--red); font-weight: 800; line-height: 1.1; margin: 8px 0 14px; overflow-wrap: anywhere; }
+  .pill { display: inline-block; background: var(--soft); border-radius: 999px; padding: 6px 14px; font-weight: 600; }
+  .steps { text-align: left; margin: 18px 0 0; padding: 16px 16px 16px 40px; background: #fff; border: 1.5px dashed var(--line); border-radius: 12px; }
+  .steps li + li { margin-top: 6px; }
+  .shh { color: #cfe0d6; margin-top: 18px; font-size: .9rem; }
+  button.secondary.back { margin-top: 10px; color: #cfe0d6; border-color: #cfe0d6; }
+  button.secondary.back:hover { background: rgba(255,255,255,.08); }
+  @media (prefers-reduced-motion: reduce) {
+    .gift:not(.open) { animation: none; }
+    .gift .lid-group, .result { transition: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="snow" aria-hidden="true"></canvas>
+<main>
+
+  <!-- INVITE (front page) -->
+  <section id="invite" class="hidden">
+    <div class="eyebrow">A note from Santa's helpers</div>
+    <h1 class="title">Pallavi &amp; Aditya<span class="title-sub">request the pleasure of your company</span></h1>
+    <p class="subtitle">Join us at our home for Christmas dinner, a little mischief and a Secret Santa gift swap. Come bring the joy! 🎅</p>
+
+    <figure class="photo">
+      <img src="family.jpg" width="1600" height="900" alt="The family gathered around the Christmas tree at last year's party">
+      <figcaption>Last year's crew. Let's do it again!</figcaption>
+    </figure>
+
+    <div class="card" id="find">
+      <h2>Unlock your invitation</h2>
+      <p class="hint" style="margin:6px 0 14px">Enter the secret code Pallavi &amp; Aditya sent you to see the party details and your Secret Santa match.</p>
+      <form id="code-form" class="code-row" autocomplete="off">
+        <input id="code" aria-label="Secret code" placeholder="e.g. HOLLY1234" autocapitalize="characters" spellcheck="false">
+        <button id="code-btn" type="submit">Unlock 🔑</button>
+      </form>
+      <div class="error" id="code-error" role="alert"></div>
+    </div>
+  </section>
+
+  <!-- UNLOCKED: details + Secret Santa reveal -->
+  <section id="reveal" class="reveal hidden">
+    <div class="hello" id="hello"></div>
+    <p class="lead">We can't wait to celebrate with you. Here's everything you need.</p>
+
+    <div class="card details-card">
+      <h2>The details</h2>
+      <ul class="details">
+        <li>
+          <span class="icon" aria-hidden="true">📅</span>
+          <div><div class="k">When</div><div class="v" id="p-date"></div><div class="sub" id="p-time"></div></div>
+        </li>
+        <li>
+          <span class="icon" aria-hidden="true">📍</span>
+          <div>
+            <div class="k">Where</div><div class="v" id="p-address"></div>
+            <a class="btn secondary" id="p-map" target="_blank" rel="noopener">Open in Google Maps</a>
+          </div>
+        </li>
+        <li>
+          <span class="icon" aria-hidden="true">👗</span>
+          <div>
+            <div class="k">Dress code</div>
+            <div class="v"><span id="p-dress"></span>
+              <span class="swatches" aria-hidden="true"><i style="background:#c0392b"></i><i style="background:#1f6f4a"></i><i style="background:#fff"></i></span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <span class="icon" aria-hidden="true">🎁</span>
+          <div><div class="k">Secret Santa</div><div class="v">Bring one gift for the person you've drawn</div><div class="sub" id="p-budget"></div></div>
+        </li>
+      </ul>
+    </div>
+
+    <h2 class="match-title">Your Secret Santa match</h2>
+    <p class="lead">The elves have drawn names at random. Your match is inside.</p>
+    <button class="gift" id="gift" aria-label="Open your gift">
+      <div class="box"></div>
+      <div class="ribbon-v"></div>
+      <div class="lid-group">
+        <div class="lid"></div>
+        <div class="bow"></div>
+      </div>
+    </button>
+    <p class="tap" id="tap">Tap the gift to open</p>
+    <div class="result" id="result" aria-live="polite">
+      <div class="card">
+        <div class="for">You're the Secret Santa for</div>
+        <div class="name" id="recipient"></div>
+        <span class="pill" id="r-budget"></span>
+        <ol class="steps">
+          <li>Pick a gift for <strong class="rname"></strong> within the budget.</li>
+          <li>Write <strong class="rname"></strong>'s name on a card and put it on top of the gift.</li>
+          <li>Keep it under the Christmas tree on the day of the party, <strong id="r-date"></strong>.</li>
+        </ol>
+      </div>
+      <p class="shh">🤫 Keep it a secret!</p>
+    </div>
+    <button class="secondary back" id="back">Lock and go back</button>
+  </section>
+
+</main>
+
+<script src="pairs.js" onerror="window.SANTA_DATA = null"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  // ---- helpers ----
+  // pairs.js holds one AES-GCM entry per person, each locked with that person's code.
+  // Each entry carries the giver, their match, and the private party details, so
+  // nothing private is readable in the published files.
+  const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  const normCode = (c) => c.toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+  async function keyFor(code, salt, iter) {
+    const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(normCode(code)), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: iter, hash: "SHA-256" },
+      base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+  }
+
+  // ---- snow + confetti ----
+  const canvas = $("snow"), ctx = canvas.getContext("2d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W, H, flakes = [], confetti = [];
+  function resize() {
+    const dpr = devicePixelRatio || 1;
+    W = innerWidth; H = innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize(); addEventListener("resize", resize);
+  for (let i = 0; i < 90; i++) flakes.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 2.4 + .6, s: Math.random() * .6 + .3, w: Math.random() * 6 });
+  function burst() {
+    if (reduce) return;
+    const colors = ["#c0392b", "#e6b84d", "#ffffff", "#2ecc71"];
+    for (let i = 0; i < 140; i++) confetti.push({
+      x: W / 2, y: H * .35, vx: (Math.random() - .5) * 14, vy: Math.random() * -12 - 3,
+      c: colors[i % colors.length], s: Math.random() * 6 + 4, a: Math.random() * 6, life: 0 });
+  }
+  function frame(t) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255,255,255,.75)";
+    for (const f of flakes) {
+      if (!reduce) { f.y += f.s; f.x += Math.sin(t / 1500 + f.w) * .3; }
+      if (f.y > H + 5) { f.y = -5; f.x = Math.random() * W; }
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+    }
+    confetti = confetti.filter((p) => p.life < 180 && p.y < H + 20);
+    for (const p of confetti) {
+      p.vy += .3; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += .15; p.life++;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c;
+      ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ---- invite + code reveal ----
+  function inviteMode() {
+    $("invite").classList.remove("hidden");
+
+    $("code-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = $("code-error"), btn = $("code-btn");
+      err.textContent = "";
+      const code = $("code").value;
+      if (normCode(code).length < 4) return (err.textContent = "Please enter the code you were sent.");
+      const data = window.SANTA_DATA;
+      if (!data) return (err.textContent = "Invitations aren't ready yet. Check back soon!");
+      btn.disabled = true; btn.textContent = "Checking…";
+      try {
+        const key = await keyFor(code, unb64(data.salt), data.iter);
+        let match = null;
+        for (const e of data.entries) {
+          try {
+            const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(e.iv) }, key, unb64(e.ct));
+            match = JSON.parse(new TextDecoder().decode(pt)); break;
+          } catch { /* not this one */ }
+        }
+        if (!match) { err.textContent = "That code didn't match. Check for typos and try again."; return; }
+        showReveal(match);
+      } catch {
+        err.textContent = "Something went wrong. Please try again.";
+      } finally {
+        btn.disabled = false; btn.textContent = "Unlock 🔑";
+      }
+    });
+  }
+
+  function showReveal(m) {
+    $("invite").classList.add("hidden");
+    $("reveal").classList.remove("hidden");
+    window.scrollTo(0, 0);
+    $("hello").textContent = `Hi ${m.g}! 🎄`;
+    $("recipient").textContent = m.r;
+    document.querySelectorAll(".rname").forEach((el) => (el.textContent = m.r));
+    const p = m.p;
+    $("p-date").textContent = p.date;
+    $("p-time").textContent = p.time;
+    $("p-address").textContent = p.address;
+    $("p-map").href = p.maps;
+    $("p-dress").textContent = p.dress;
+    $("p-budget").textContent = "Budget: " + p.budget;
+    $("r-budget").textContent = "💰 Budget: " + p.budget;
+    $("r-date").textContent = p.shortDate;
+    const gift = $("gift");
+    gift.classList.remove("open");
+    $("tap").classList.remove("hidden");
+    $("result").classList.remove("show");
+    gift.onclick = () => {
+      gift.classList.add("open");
+      gift.setAttribute("aria-label", "Gift opened");
+      $("tap").classList.add("hidden");
+      $("result").classList.add("show");
+      burst();
+      gift.onclick = null;
+    };
+  }
+
+  // Reload rather than hide, so the unlocked details don't stay in the page.
+  $("back").addEventListener("click", () => location.reload());
+
+  inviteMode();
+})();
+</script>
+</body>
+</html>
